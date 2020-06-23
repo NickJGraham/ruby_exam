@@ -1,0 +1,78 @@
+<style>
+    #money {
+    width: 50px;
+    }
+
+    </style>
+
+
+    <form action='/sessions' method='post'>
+    <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+    <input type='hidden' name='_method' value='delete'>
+    <input type='submit' value='Log Out'>
+    </form>
+<h3> Name: <%= @lender.fname %> <%= @lender.lname %> </h3>
+<h4> Amount Balance: $<%= @lender.money %> </h4> 
+
+<p>List of people in need of help </p>
+<table border="1">
+	<thead>
+		<tr>
+			<td> Name </td>
+			<td> Need money for </td>
+			<td> Reason for Loan </td>
+			<td> Amount needed </td>
+			<td> Amount raised </td>
+			<td> Action </td>
+		</tr>
+	</thead>
+	<tbody>
+		<% @borrowers.each do |borrower| %>
+			<% if borrower.lends.include? @lender %>
+			<% else %>
+			<tr>
+				<td><%= borrower.fname %></td>
+				<td><%= borrower.purpose %></td>
+				<td><%= borrower.description %></td>
+				<td>$<%= borrower.money %></td>
+				<td>$<%= borrower.raised %></td>
+				<td>
+					<form action="/lenders/<%= borrower.id %>" method="post">
+					<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+					<p>
+					<input type="number" name="lender[money]" id="money" >
+					<input type="submit" value="Lend">
+					</p>
+				</form>
+				</td>
+			</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>
+
+<p>List of people you lent money to </p>
+<table border="1">
+	<thead>
+		<tr>
+			<td> Name </td>
+			<td> Need money for </td>
+			<td> Reason for Loan </td>
+			<td> Amount needed </td>
+			<td> Amount raised </td>
+			<td> Amount Lent </td>
+		</tr>
+	</thead>
+	<tbody>
+			<% @lends.each do |lender| %>	
+			<tr>
+				<td><%= lender.borrower.fname %></td>
+				<td><%= lender.borrower.purpose %></td>
+				<td><%= lender.borrower.description %></td>
+				<td>$<%= lender.borrower.money %></td>
+				<td>$<%= lender.borrower.raised %></td>
+				<td>$<%= lender.amount %> </td>
+			</tr>
+			<% end %>
+	</tbody>
+</table>
